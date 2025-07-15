@@ -1,5 +1,6 @@
 package vn.neu.ms365authgateway.service;
 
+import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,9 +17,12 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
+@RequiredArgsConstructor
 public class MSAuthService {
 
     public static final String MS365_LOGIN_URL = "https://lms.neu.edu.vn/login/index.php";
+
+    final StudentInfoService studentInfoService;
 
     final AtomicReference<RestTemplate> restTemplate = new AtomicReference<>();
     public AuthResponse auth(AuthRequest request) throws ApiCallException {
@@ -52,8 +56,11 @@ public class MSAuthService {
 
             String response = loginResponse.getBody();
             if((loginResponse.getStatusCode().is3xxRedirection() || loginResponse.getStatusCode().is2xxSuccessful()) && !response.contains("Invalid login")) {
+                Map<String, Object> userInfo = studentInfoService.getUserInfo(request.getId());
+
                 return AuthResponse.builder()
                         .result(true)
+                        .userInfo(userInfo)
                         .build();
             } else {
                 return AuthResponse.builder()

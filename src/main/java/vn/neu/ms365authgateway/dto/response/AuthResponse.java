@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -12,6 +14,8 @@ import lombok.NoArgsConstructor;
 public class AuthResponse {
 
     boolean result;
+
+    Map<String, Object> userInfo;
 
     String message;
 
