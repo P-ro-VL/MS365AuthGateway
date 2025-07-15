@@ -15,8 +15,6 @@ public class AuthResponse {
 
     boolean result;
 
-    Map<String, Object> userInfo;
-
     String message;
 
 }

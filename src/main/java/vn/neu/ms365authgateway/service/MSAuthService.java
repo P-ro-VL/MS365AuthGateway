@@ -60,7 +60,6 @@ public class MSAuthService {
 
                 return AuthResponse.builder()
                         .result(true)
-                        .userInfo(userInfo)
                         .build();
             } else {
                 return AuthResponse.builder()
