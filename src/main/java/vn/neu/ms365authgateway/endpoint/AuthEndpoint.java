@@ -11,22 +11,32 @@ import vn.neu.ms365authgateway.api.ApiCallException;
 import vn.neu.ms365authgateway.api.ApiCallResult;
 import vn.neu.ms365authgateway.api.ApiExecutorService;
 import vn.neu.ms365authgateway.api.ApiResponse;
+import vn.neu.ms365authgateway.dto.request.AuthQRRequest;
 import vn.neu.ms365authgateway.dto.request.AuthRequest;
 import vn.neu.ms365authgateway.dto.response.AuthResponse;
 import vn.neu.ms365authgateway.service.MSAuthService;
+import vn.neu.ms365authgateway.service.QRCodeAuthService;
+
+import java.util.Map;
 
 @RestController
-@RequestMapping(path = "/v1/auth/ms")
+@RequestMapping(path = "/v1/auth")
 @AllArgsConstructor
 public class AuthEndpoint {
 
     ApiExecutorService apiExecutorService;
 
     MSAuthService msAuthService;
+    QRCodeAuthService qrCodeAuthService;
 
-    @PostMapping
+    @PostMapping(path = "/ms")
     public ResponseEntity<ApiResponse<AuthResponse>> authMS365(@RequestBody AuthRequest request, HttpServletRequest httpServletRequest) throws ApiCallException {
         return apiExecutorService.execute(httpServletRequest, () -> new ApiCallResult<>(msAuthService.auth(request)));
+    }
+
+    @PostMapping(path = "/code")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> authQRCode(@RequestBody AuthQRRequest request, HttpServletRequest httpServletRequest) throws ApiCallException {
+        return apiExecutorService.execute(httpServletRequest, () -> new ApiCallResult<>(qrCodeAuthService.getStudentInfo(request.getCode())));
     }
 
 }
