@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 @Service
 public class QRCodeAuthService {
 
+    private static final String AUTH_QR_CODE_URL = "http://bk-app.neu.edu.vn/api/devices/services/info_student";
+
     private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_1_1)
             .followRedirects(HttpClient.Redirect.NORMAL)
@@ -40,7 +42,7 @@ public class QRCodeAuthService {
                     .collect(Collectors.joining("&"));
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://bk-app.neu.edu.vn/api/devices/services/info_student"))
+                    .uri(URI.create(AUTH_QR_CODE_URL))
                     .timeout(Duration.ofSeconds(20))
                     .header("Content-Type", "application/x-www-form-urlencoded")
                     .POST(HttpRequest.BodyPublishers.ofString(formBody, StandardCharsets.UTF_8))

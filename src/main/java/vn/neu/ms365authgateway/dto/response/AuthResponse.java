@@ -15,6 +15,8 @@ public class AuthResponse {
 
     boolean result;
 
+    boolean isStudent;
+
     String message;
 
 }

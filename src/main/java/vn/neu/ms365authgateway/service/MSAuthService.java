@@ -23,6 +23,7 @@ public class MSAuthService {
     public static final String MS365_LOGIN_URL = "https://lms.neu.edu.vn/login/index.php";
 
     final StudentInfoService studentInfoService;
+    final TeacherInfoService teacherInfoService;
 
     final AtomicReference<RestTemplate> restTemplate = new AtomicReference<>();
     public AuthResponse auth(AuthRequest request) throws ApiCallException {
@@ -56,14 +57,24 @@ public class MSAuthService {
 
             String response = loginResponse.getBody();
             if((loginResponse.getStatusCode().is3xxRedirection() || loginResponse.getStatusCode().is2xxSuccessful()) && !response.contains("Invalid login")) {
-                Map<String, Object> userInfo = studentInfoService.getUserInfo(request.getId());
+                boolean isStudent;
+
+                try {
+                    studentInfoService.getUserInfo(request.getId());
+                    isStudent = true;
+                } catch (ApiCallException studentException) {
+                    teacherInfoService.getUserInfo(request.getId());
+                    isStudent = false;
+                }
 
                 return AuthResponse.builder()
                         .result(true)
+                        .isStudent(isStudent)
                         .build();
             } else {
                 return AuthResponse.builder()
                         .result(false)
+                        .isStudent(false)
                         .message("Thông tin đăng nhập không chính xác")
                         .build();
             }
