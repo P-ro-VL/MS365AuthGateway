@@ -9,6 +9,7 @@ import vn.neu.ms365authgateway.api.ApiCallResult;
 import vn.neu.ms365authgateway.api.ApiExecutorService;
 import vn.neu.ms365authgateway.api.ApiResponse;
 import vn.neu.ms365authgateway.service.StudentInfoService;
+import vn.neu.ms365authgateway.service.TeacherInfoService;
 
 import java.util.Map;
 
@@ -20,10 +21,14 @@ public class UserInfoEndpoint {
     ApiExecutorService apiExecutorService;
 
     StudentInfoService studentInfoService;
+    TeacherInfoService teacherInfoService;
 
     @GetMapping(path = "/{userId}")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> authMS365(@PathVariable String userId, HttpServletRequest httpServletRequest) throws ApiCallException {
-        return apiExecutorService.execute(httpServletRequest, () -> new ApiCallResult<>(studentInfoService.getUserInfo(userId)));
+    public ResponseEntity<ApiResponse<Map<String, Object>>> authMS365(@PathVariable String userId, @RequestParam boolean isStudent, HttpServletRequest httpServletRequest) throws ApiCallException {
+        return apiExecutorService.execute(httpServletRequest, () -> new ApiCallResult<>(
+                isStudent ? studentInfoService.getUserInfo(userId)
+                        : teacherInfoService.getUserInfo(userId)
+        ));
     }
 
 }
